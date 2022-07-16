@@ -76,7 +76,8 @@ class Home extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(alignment: AlignmentDirectional.bottomStart,
+          Stack(
+            alignment: AlignmentDirectional.bottomStart,
             children: [
               Image(
                 image: NetworkImage(product.image),
@@ -120,7 +121,10 @@ class Home extends StatelessWidget {
                   style: const TextStyle(
                       color: Colors.grey,
                       decoration: TextDecoration.lineThrough),
-                ), const Spacer() , IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border))
+                ),
+              const Spacer(),
+              IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.favorite_border))
             ],
           )
         ],
