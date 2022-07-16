@@ -27,45 +27,50 @@ class Home extends StatelessWidget {
 
   Widget _buildProducts(HomeModel? model) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          CarouselSlider(
-            items: model?.data.banners
-                .map((element) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image(
-                        image: NetworkImage(element.image),
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ))
-                .toList(),
-            options: CarouselOptions(
-                height: 250,
-                reverse: false,
-                autoPlay: true,
-                autoPlayCurve: Curves.fastOutSlowIn,
-                viewportFraction: 1,
-                initialPage: 0,
-                autoPlayInterval: const Duration(seconds: 5),
-                autoPlayAnimationDuration: const Duration(seconds: 3)),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          GridView.count(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            children: model?.data.products
-                    .map((e) => _buildProductItem(e))
-                    .toList() ??
-                [],
-            childAspectRatio: 1 / 1.6,
-            mainAxisSpacing: 5,
-            crossAxisSpacing: 5,
-          )
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CarouselSlider(
+              items: model?.data.banners
+                  .map((element) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image(
+                          image: NetworkImage(element.image),
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ))
+                  .toList(),
+              options: CarouselOptions(
+                  height: 250,
+                  reverse: false,
+                  autoPlay: true,
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  viewportFraction: 1,
+                  initialPage: 0,
+                  autoPlayInterval: const Duration(seconds: 5),
+                  autoPlayAnimationDuration: const Duration(seconds: 3)),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text("Products", style: TextStyle(fontSize: 18 , fontWeight: FontWeight.bold),),
+            GridView.count(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              children: model?.data.products
+                      .map((e) => _buildProductItem(e))
+                      .toList() ??
+                  [],
+              childAspectRatio: 1 / 1.6,
+              mainAxisSpacing: 5,
+              crossAxisSpacing: 5,
+            )
+          ],
+        ),
       ),
     );
   }
@@ -76,7 +81,8 @@ class Home extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(alignment: AlignmentDirectional.bottomStart,
+          Stack(
+            alignment: AlignmentDirectional.bottomStart,
             children: [
               Image(
                 image: NetworkImage(product.image),
@@ -120,7 +126,10 @@ class Home extends StatelessWidget {
                   style: const TextStyle(
                       color: Colors.grey,
                       decoration: TextDecoration.lineThrough),
-                ), const Spacer() , IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border))
+                ),
+              const Spacer(),
+              IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.favorite_border))
             ],
           )
         ],
