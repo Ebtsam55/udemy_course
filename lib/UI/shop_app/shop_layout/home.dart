@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/cubit/shopApp/home/shop_home_cubit.dart';
 import 'package:news_app/cubit/shopApp/home/shop_home_state.dart';
+import 'package:news_app/model/shop_models/categories_model.dart';
 import 'package:news_app/network/shop_data_model.dart';
 
 class Home extends StatelessWidget {
@@ -15,9 +16,11 @@ class Home extends StatelessWidget {
         listener: (context, state) {},
         builder: (context, state) {
           return ConditionalBuilder(
-            condition: ShopCubit.get(context).homeModel != null,
-            builder: (context) =>
-                _buildProducts(ShopCubit.get(context).homeModel),
+            condition: ShopCubit.get(context).homeModel != null &&
+                ShopCubit.get(context).categoriesModel != null,
+            builder: (context) => _buildHomeData(
+                homeModel: ShopCubit.get(context).homeModel,
+                categoriesModel: ShopCubit.get(context).categoriesModel),
             fallback: (context) => const Center(
               child: CircularProgressIndicator(),
             ),
@@ -25,7 +28,8 @@ class Home extends StatelessWidget {
         });
   }
 
-  Widget _buildProducts(HomeModel? model) {
+  Widget _buildHomeData(
+      {HomeModel? homeModel, CategoriesModel? categoriesModel}) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -33,7 +37,7 @@ class Home extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CarouselSlider(
-              items: model?.data.banners
+              items: homeModel?.data.banners
                   .map((element) => Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Image(
@@ -56,22 +60,90 @@ class Home extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Text("Products", style: TextStyle(fontSize: 18 , fontWeight: FontWeight.bold),),
-            GridView.count(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              children: model?.data.products
-                      .map((e) => _buildProductItem(e))
-                      .toList() ??
-                  [],
-              childAspectRatio: 1 / 1.6,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5,
-            )
+            _buildCategoriesSection(categoriesModel),
+            const SizedBox(
+              height: 10,
+            ),
+            _buildProductsSection(homeModel?.data.products),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCategoriesSection(CategoriesModel? categoriesModel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Categories",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        SizedBox(
+          height: 150,
+          child: ListView.separated(
+              itemCount: categoriesModel?.data?.data?.length ?? 0,
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (_, __) => const SizedBox(
+                    width: 10,
+                  ),
+              itemBuilder: (context, index) => _buildCategoryItem(
+                  categoriesModel?.data?.data?[index].image ?? '',
+                  categoriesModel?.data?.data?[index].name ?? '')),
+        )
+      ],
+    );
+  }
+
+  Widget _buildCategoryItem(String image, String name) {
+    return Stack(
+      alignment: AlignmentDirectional.bottomCenter,
+      children: [
+        Image(
+            fit: BoxFit.cover,
+            width: 120,
+            height: 150,
+            image: NetworkImage(image)),
+        Container(
+          padding: const EdgeInsets.all(5),
+          width: 120,
+          color: Colors.black54,
+          child: Text(
+            name,
+            style: const TextStyle(fontSize: 14, color: Colors.white),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildProductsSection(List<ProductModel>? products) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Products",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        GridView.count(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          crossAxisCount: 2,
+          children: products?.map((e) => _buildProductItem(e)).toList() ?? [],
+          childAspectRatio: 1 / 1.6,
+          mainAxisSpacing: 5,
+          crossAxisSpacing: 5,
+        )
+      ],
     );
   }
 

@@ -14,8 +14,17 @@ class DioHelper {
     String lang = 'en',
      String? token}) async {
     _dio?.options.headers = { 'lang': lang,
-      'Content-Type': 'application/json', 'token': token};
+      'Content-Type': 'application/json', 'Authorization': token};
     return await _dio?.get(url, queryParameters: query);
+  }
+
+  static Future<Response?> putData({required String url,
+    Map<String, dynamic>? query,
+    String lang = 'en',
+    String? token}) async {
+    _dio?.options.headers = { 'lang': lang,
+      'Content-Type': 'application/json', 'Authorization': token};
+    return await _dio?.put(url, queryParameters: query);
   }
 
   static Future<Response?> postData({

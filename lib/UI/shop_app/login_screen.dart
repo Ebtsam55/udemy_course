@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/UI/shop_app/register_screen.dart';
 import 'package:news_app/UI/shop_app/shop_layout/shop_layout.dart';
-import '../../cubit/shopApp/login/login_cubit.dart';
-import '../../cubit/shopApp/login/login_state.dart';
+import 'package:news_app/cubit/shopApp/auth/auth_cubit.dart';
+import 'package:news_app/cubit/shopApp/auth/auth_state.dart';
 import 'package:news_app/network/cache_helper.dart';
 import 'package:news_app/widgets/common/components.dart';
 
@@ -25,12 +25,12 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: BlocProvider<LoginCubit>(
-        create: (_) => LoginCubit(),
-        child: BlocConsumer<LoginCubit, LoginState>(
+      body: BlocProvider<AuthCubit>(
+        create: (_) => AuthCubit(),
+        child: BlocConsumer<AuthCubit, AuthStates>(
           listener: (_, state) {
             if (state is LoginSuccessState) {
-              if (state.model.status) {
+              if (state.model.status??false) {
                 CacheHelper.putData(
                         key: 'token', value: state.model.data?.token)
                     .then((value) => {
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     builder: (ctx) => ShopLayout()))
                         });
               } else {
-                showToast(msg: state.model.message, state: ToastState.ERROR);
+                showToast(msg: state.model.message??'', state: ToastState.ERROR);
               }
             }
 
@@ -79,10 +79,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 20,
                     ),
                     defaultFormField(
-                        isPassword: LoginCubit.get(context).isPasswordShown,
-                        suffix: LoginCubit.get(context).passSuffixIcon,
+                        isPassword: AuthCubit.get(context).isPasswordShown,
+                        suffix: AuthCubit.get(context).passSuffixIcon,
                         suffixPressed: () =>
-                            LoginCubit.get(context).changePasswordVisibility(),
+                            AuthCubit.get(context).changePasswordVisibility(),
                         controller: _passController,
                         type: TextInputType.visiblePassword,
                         validate: (value) {
@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         isLoading: state is LoginLoadingState,
                         function: () {
                           if (_formKey.currentState?.validate() ?? false) {
-                            LoginCubit.get(context).login(
+                            AuthCubit.get(context).login(
                                 email: _emailController.text,
                                 pass: _passController.text);
                           }
