@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
               ..getBusiness()
               ..getScience()*/
             ),
-        BlocProvider<ShopCubit>(create: (_) => ShopCubit()..getHomeData())
+        BlocProvider<ShopCubit>(create: (_) => ShopCubit()..getHomeData()..getCategories())
       ],
       child: BlocConsumer<NewsCubit, NewsState>(
           buildWhen: (_, state) => state is ModeChanged,

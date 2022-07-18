@@ -1,6 +1,6 @@
 class LoginModel {
-  late bool status;
-  late String message;
+  bool? status;
+  String? message;
   UserData? data;
 
   LoginModel.fromJson(Map<String, dynamic> json) {
@@ -11,16 +11,15 @@ class LoginModel {
 }
 
 class UserData {
-  late int id;
-  late String name;
-  late String email;
+  int? id;
+  String? name;
+  String? email;
 
-  late String image;
+  String? image;
 
-  late String phone;
-  late int points;
-  late int credit;
-  late String token;
+  String? phone;
+
+  String? token;
 
   UserData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -28,8 +27,6 @@ class UserData {
     email = json['email'];
     image = json['image'];
     phone = json['phone'];
-    points = json['points'];
-    credit = json['credit'];
     token = json['token'];
   }
 }
